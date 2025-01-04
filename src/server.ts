@@ -3,11 +3,13 @@ import 'tsconfig-paths/register';
 import httpStatus from 'http-status';
 import express, { Request, Response } from 'express';
 
+import router from '@/routes';
 import env from '@/config/env';
 import connectDB from '@/config/db';
 import logger from '@/config/logger';
 import response from '@/utils/response';
 import morganMiddleware from '@/config/morgan';
+import { errorConverter, errorHandler } from '@/middlewares';
 
 const app = express();
 
@@ -18,6 +20,8 @@ if (env.server.nodeEnv === 'development') {
   app.use(morganMiddleware);
   mongoose.set('debug', true);
 }
+
+app.use('/api/v1', router);
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('Server is running');
@@ -32,6 +36,13 @@ app.get('/health-check', (_req: Request, res: Response) => {
     }),
   );
 });
+
+app.all('*', (_req: Request, res: Response) => {
+  res.status(httpStatus.NOT_FOUND).json(response(httpStatus.NOT_FOUND, 'Không tìm thấy tài nguyên.'));
+});
+
+app.use(errorConverter);
+app.use(errorHandler);
 
 connectDB()
   .then(() => {
