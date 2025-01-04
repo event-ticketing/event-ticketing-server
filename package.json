@@ -1,0 +1,37 @@
+{
+  "name": "ticket-box-server",
+  "version": "1.0.0",
+  "description": "server for ticket-box - a event ticketing webapplication",
+  "main": "src/server.ts",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon",
+    "build": "tsc",
+    "format": "prettier --write ."
+  },
+  "author": "ductung3008",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http-status": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16",
+    "tsconfig-paths": "^4.2.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/http-status": "^0.2.30",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.10.5",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
