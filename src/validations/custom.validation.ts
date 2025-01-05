@@ -6,4 +6,12 @@ const objectId = (value: string, helpers: any) => {
   return value;
 };
 
-export { objectId };
+const password = (value: string, helpers: any) => {
+  if (value.length < 6 || value.length > 32) {
+    return helpers.message('Mật khẩu phải từ 6 đến 32 ký tự.');
+  }
+
+  return value;
+};
+
+export { objectId, password };

@@ -1,6 +1,6 @@
 import joi from 'joi';
 
-import { GENDER, USER_ROLE } from '@/constants/user.constant';
+import { UserConstant } from '@/constants';
 import { objectId } from '@/validations/custom.validation';
 
 const createUser = {
@@ -10,9 +10,9 @@ const createUser = {
     password: joi.string().required(),
     fullName: joi.string().required(),
     dateOfBirth: joi.date(),
-    gender: joi.string().valid(...Object.values(GENDER)),
+    gender: joi.string().valid(...Object.values(UserConstant.GENDER)),
     avatar: joi.string(),
-    role: joi.string().valid(...Object.values(USER_ROLE)),
+    role: joi.string().valid(...Object.values(UserConstant.USER_ROLE)),
     isVerified: joi.boolean().default(false),
   }),
 };
@@ -40,9 +40,9 @@ const updateUser = {
     password: joi.string().required(),
     fullName: joi.string().required(),
     dateOfBirth: joi.date(),
-    gender: joi.string().valid(...Object.values(GENDER)),
+    gender: joi.string().valid(...Object.values(UserConstant.GENDER)),
     avatar: joi.string(),
-    role: joi.string().valid(...Object.values(USER_ROLE)),
+    role: joi.string().valid(...Object.values(UserConstant.USER_ROLE)),
     isVerified: joi.boolean().default(false),
   }),
 };

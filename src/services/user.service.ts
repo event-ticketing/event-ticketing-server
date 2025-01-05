@@ -1,8 +1,7 @@
 import httpStatus from 'http-status';
 
-import { User } from '@/models';
 import { ApiError } from '@/utils';
-import { IUser } from '@/models/user.model';
+import { User, IUser } from '@/models';
 
 const createUser = async (userData: Partial<IUser>): Promise<IUser> => {
   const { email, phoneNumber } = userData;

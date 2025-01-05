@@ -5,9 +5,9 @@ import { UserConstant } from '@/constants';
 
 export interface IUser extends Document {
   email: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   password: string;
-  fullName: string;
+  fullName?: string;
   dateOfBirth?: Date;
   gender?: string;
   avatar?: string;
@@ -15,6 +15,8 @@ export interface IUser extends Document {
   isVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+
+  isPasswordMatch(password: string): Promise<boolean>;
 }
 
 const userSchema: Schema<IUser> = new Schema(
@@ -28,7 +30,6 @@ const userSchema: Schema<IUser> = new Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
     },
@@ -39,7 +40,6 @@ const userSchema: Schema<IUser> = new Schema(
     },
     fullName: {
       type: String,
-      required: true,
       trim: true,
     },
     dateOfBirth: {
@@ -76,6 +76,11 @@ userSchema.pre<IUser>('save', async function (next) {
 
   next();
 });
+
+userSchema.methods.isPasswordMatch = async function (password: string): Promise<boolean> {
+  const user = this as IUser;
+  return await bcrypt.compare(password, user.password);
+};
 
 const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
 

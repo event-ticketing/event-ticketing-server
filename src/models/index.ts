@@ -1,3 +1,3 @@
-import User from '@/models/user.model';
+import User, { IUser } from '@/models/user.model';
 
-export { User };
+export { User, IUser };
