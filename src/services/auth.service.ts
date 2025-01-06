@@ -28,7 +28,7 @@ const signUp = async (userData: Partial<IUser>): Promise<void> => {
   await user.save();
 };
 
-const verifyOtp = async (email: string, otp: string, context: string): Promise<void> => {
+const verifyOtp = async (email: string, otp: string, context: string): Promise<void | string> => {
   const isOtpValid = await otpService.verifyOtp(`otp:${context}:${email}`, otp);
   if (!isOtpValid) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Mã OTP không hợp lệ.');
@@ -44,7 +44,7 @@ const verifyOtp = async (email: string, otp: string, context: string): Promise<v
     await user.save();
     return;
   } else if (context === 'forgot-password') {
-    return;
+    return crypto.encrypt(email);
   }
 };
 
@@ -77,4 +77,24 @@ const refreshToken = async (refreshToken: string): Promise<{ accessToken: string
   return { accessToken };
 };
 
-export { signUp, verifyOtp, login, refreshToken };
+const forgotPassword = async (email: string): Promise<void> => {
+  const otp = generateOtp();
+  const encryptedOtp = crypto.encrypt(otp);
+
+  await otpService.saveOtp(`otp:forgot-password:${email}`, encryptedOtp);
+  await emailQueue.sendOtpEmail(email, otp);
+};
+
+const resetPassword = async (resetPasswordToken: string, newPassword: string): Promise<void> => {
+  const email = crypto.decrypt(resetPasswordToken);
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.');
+  }
+
+  user.password = newPassword;
+  await user.save();
+};
+
+export { signUp, verifyOtp, login, refreshToken, forgotPassword, resetPassword };

@@ -11,8 +11,8 @@ const signUp = catchAsync(async (req: Request, res: Response) => {
 
 const verifyOtp = catchAsync(async (req: Request, res: Response) => {
   const { email, otp, context } = req.body;
-  await authService.verifyOtp(email, otp, context);
-  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Xác thực OTP thành công.'));
+  const resetPasswordToken = await authService.verifyOtp(email, otp, context);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Xác thực OTP thành công.', { resetPasswordToken }));
 });
 
 const login = catchAsync(async (req: Request, res: Response) => {
@@ -27,4 +27,16 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.OK).json(response(httpStatus.OK, 'Làm mới token thành công.', { accessToken }));
 });
 
-export { signUp, verifyOtp, login, refreshToken };
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  const { email } = req.body;
+  await authService.forgotPassword(email);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Mã OTP đã được gửi đến email của bạn.'));
+});
+
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const { resetPasswordToken, password } = req.body;
+  await authService.resetPassword(resetPasswordToken, password);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Đặt lại mật khẩu thành công.'));
+});
+
+export { signUp, verifyOtp, login, refreshToken, forgotPassword, resetPassword };

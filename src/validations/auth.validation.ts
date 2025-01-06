@@ -37,4 +37,20 @@ const refreshToken = {
   }),
 };
 
-export { signUp, verifyOtp, login, refreshToken };
+const forgotPassword = {
+  body: joi.object({
+    email: joi.string().email().required(),
+  }),
+};
+
+const resetPassword = {
+  body: joi.object({
+    resetPasswordToken: joi.string().required(),
+    password: joi.string().required().custom(password),
+    repeatPassword: joi.string().valid(joi.ref('password')).messages({
+      'any.only': 'Mật khẩu không khớp.',
+    }),
+  }),
+};
+
+export { signUp, verifyOtp, login, refreshToken, forgotPassword, resetPassword };
