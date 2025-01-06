@@ -23,6 +23,16 @@ const env = {
     ivLength: +(process.env.ENCRYPT_IV_LENGTH || 16),
     key: process.env.ENCRYPT_KEY || 'key',
   },
+  jwt: {
+    access: {
+      secret: process.env.JWT_ACCESS_SECRET || 'access-secret',
+      expiry: process.env.JWT_ACCESS_EXPIRY || '1d',
+    },
+    refresh: {
+      secret: process.env.JWT_REFRESH_SECRET || 'refresh-secret',
+      expiry: process.env.JWT_REFRESH_EXPIRY || '15d',
+    },
+  },
 };
 
 export default env;

@@ -2,8 +2,9 @@ import httpStatus from 'http-status';
 
 import { emailQueue } from '@/queues';
 import { IUser, User } from '@/models';
-import { userService, otpService } from '@/services';
+import { userService, otpService, jwtService } from '@/services';
 import { ApiError, crypto, generateOtp } from '@/utils';
+import { TOKEN_TYPE } from '@/constants/jwt.constant';
 
 const signUp = async (userData: Partial<IUser>): Promise<void> => {
   const { email } = userData;
@@ -47,7 +48,7 @@ const verifyOtp = async (email: string, otp: string, context: string): Promise<v
   }
 };
 
-const login = async (identifier: string, password: string): Promise<IUser> => {
+const login = async (identifier: string, password: string): Promise<{ accessToken: string; refreshToken: string }> => {
   const user = await User.findOne({ $or: [{ email: identifier }, { phoneNumber: identifier }] }).select('+password');
 
   if (!user) {
@@ -58,7 +59,22 @@ const login = async (identifier: string, password: string): Promise<IUser> => {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Thông tin đăng nhập không hợp lệ.');
   }
 
-  return user;
+  const accessToken = jwtService.generateToken({ id: user.id }, TOKEN_TYPE.ACCESS);
+  const refreshToken = jwtService.generateToken({ id: user.id }, TOKEN_TYPE.REFRESH);
+
+  return { accessToken, refreshToken };
 };
 
-export { signUp, verifyOtp, login };
+const refreshToken = async (refreshToken: string): Promise<{ accessToken: string }> => {
+  const { id } = jwtService.verifyToken(refreshToken, TOKEN_TYPE.REFRESH);
+  const user = await User.findById(id);
+
+  if (!user) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Người dùng không tồn tại.');
+  }
+
+  const accessToken = jwtService.generateToken({ id: user.id }, TOKEN_TYPE.ACCESS);
+  return { accessToken };
+};
+
+export { signUp, verifyOtp, login, refreshToken };

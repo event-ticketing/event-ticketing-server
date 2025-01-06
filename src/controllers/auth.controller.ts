@@ -17,8 +17,14 @@ const verifyOtp = catchAsync(async (req: Request, res: Response) => {
 
 const login = catchAsync(async (req: Request, res: Response) => {
   const { identifier, password } = req.body;
-  const user = await authService.login(identifier, password);
-  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Đăng nhập thành công.', user));
+  const { accessToken, refreshToken } = await authService.login(identifier, password);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Đăng nhập thành công.', { accessToken, refreshToken }));
 });
 
-export { signUp, verifyOtp, login };
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+  const { accessToken } = await authService.refreshToken(refreshToken);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Làm mới token thành công.', { accessToken }));
+});
+
+export { signUp, verifyOtp, login, refreshToken };

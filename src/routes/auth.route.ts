@@ -12,4 +12,6 @@ authRoute.post('/verify-otp', validate(authValidation.verifyOtp), authController
 
 authRoute.post('/login', validate(authValidation.login), authController.login);
 
+authRoute.post('/refresh-token', validate(authValidation.refreshToken), authController.refreshToken);
+
 export default authRoute;

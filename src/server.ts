@@ -9,6 +9,7 @@ import connectDB from '@/config/db';
 import logger from '@/config/logger';
 import response from '@/utils/response';
 import morganMiddleware from '@/config/morgan';
+import emailWorker from '@/queues/workers/mail.worker';
 import { errorConverter, errorHandler } from '@/middlewares';
 
 const app = express();
@@ -45,6 +46,15 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 connectDB()
+  .then(() => {
+    emailWorker
+      .on('ready', () => {
+        logger.info('Connected to email server and email worker is ready');
+      })
+      .on('error', (error: any) => {
+        logger.error(`Email worker error: ${error.message}`);
+      });
+  })
   .then(() => {
     app.listen(env.server.port, () => {
       logger.info(`Server is running on ${env.server.host}:${env.server.port}`);

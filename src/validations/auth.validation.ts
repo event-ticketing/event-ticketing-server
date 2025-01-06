@@ -31,4 +31,10 @@ const login = {
   }),
 };
 
-export { signUp, verifyOtp, login };
+const refreshToken = {
+  body: joi.object({
+    refreshToken: joi.string().required(),
+  }),
+};
+
+export { signUp, verifyOtp, login, refreshToken };
