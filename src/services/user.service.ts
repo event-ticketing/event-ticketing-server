@@ -68,4 +68,26 @@ const deleteUser = async (id: string): Promise<void> => {
   await User.deleteOne({ _id: id });
 };
 
-export { createUser, getUsers, getUserById, updateUser, deleteUser };
+const updateProfile = async (id: string, updateBody: Partial<IUser>): Promise<IUser> => {
+  const user = await getUserById(id);
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Người dùng không tồn tại.');
+  }
+
+  if (updateBody.email && user.email !== updateBody.email) {
+    const isExist = await User.findOne({ email: updateBody.email, _id: { $ne: id } });
+
+    if (isExist) {
+      throw new ApiError(httpStatus.CONFLICT, 'Email đã tồn tại.');
+    }
+  }
+
+  Object.assign(user, updateBody);
+
+  await user.save();
+
+  return user;
+};
+
+export { createUser, getUsers, getUserById, updateUser, deleteUser, updateProfile };

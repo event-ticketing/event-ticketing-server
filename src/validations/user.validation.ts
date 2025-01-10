@@ -53,4 +53,17 @@ const deleteUser = {
   }),
 };
 
-export { createUser, getUsers, getUserById, updateUser, deleteUser };
+const updateProfile = {
+  body: joi.object({
+    email: joi.string().email().optional(),
+    phoneNumber: joi.string().optional(),
+    fullName: joi.string().optional(),
+    dateOfBirth: joi.date().optional(),
+    gender: joi
+      .string()
+      .valid(...Object.values(UserConstant.GENDER))
+      .optional(),
+  }),
+};
+
+export { createUser, getUsers, getUserById, updateUser, deleteUser, updateProfile };

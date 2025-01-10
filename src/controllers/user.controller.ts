@@ -41,4 +41,18 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.NO_CONTENT).end();
 });
 
-export { createUser, getUsers, getUserById, updateUser, deleteUser };
+const getLoggedInUser = catchAsync(async (req: Request, res: Response) => {
+  const data = await userService.getUserById(req.user.id);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Lấy thông tin người dùng thành công.', data));
+});
+
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
+  const updatedData = req.body;
+  if (req.file) {
+    updatedData.avatar = req.file.path;
+  }
+  const data = await userService.updateProfile(req.user.id, updatedData);
+  res.status(httpStatus.OK).json(response(httpStatus.OK, 'Cập nhật thông tin thành công.', data));
+});
+
+export { createUser, getUsers, getUserById, updateUser, deleteUser, getLoggedInUser, updateProfile };

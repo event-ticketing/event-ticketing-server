@@ -28,6 +28,26 @@ const errorConverter = (err: unknown, req: Request, res: Response, next: NextFun
     error = new ApiError(statusCode, message, false, err instanceof Error ? err.stack : undefined);
   }
 
+  switch (error.message) {
+    case 'jwt expired':
+      error = new ApiError(httpStatus.UNAUTHORIZED, 'Phiên đăng nhập đã hết hạn');
+      break;
+    case 'jwt must be provided':
+      error = new ApiError(httpStatus.UNAUTHORIZED, 'Vui lòng đăng nhập để tiếp tục.');
+      break;
+    case 'jwt malformed':
+      error = new ApiError(httpStatus.UNAUTHORIZED, 'Token không hợp lệ');
+      break;
+    case 'invalid signature':
+      error = new ApiError(httpStatus.UNAUTHORIZED, 'Token không hợp lệ');
+      break;
+    case 'invalid token':
+      error = new ApiError(httpStatus.UNAUTHORIZED, 'Token không hợp lệ');
+      break;
+    default:
+      break;
+  }
+
   next(error);
 };
 

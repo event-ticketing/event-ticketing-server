@@ -1,10 +1,19 @@
 import express from 'express';
 
-import { userController } from '@/controllers';
-import { validate } from '@/middlewares';
+import { UserConstant } from '@/constants';
 import { userValidation } from '@/validations';
+import { userController } from '@/controllers';
+import { auth, author, upload, validate } from '@/middlewares';
 
 const userRoute = express.Router();
+
+userRoute.use(auth);
+
+userRoute.get('/me', userController.getLoggedInUser);
+
+userRoute.put('/me', upload('avatar'), validate(userValidation.updateProfile), userController.updateProfile);
+
+userRoute.use(author([UserConstant.USER_ROLE.ADMIN]));
 
 userRoute.post('/', validate(userValidation.createUser), userController.createUser);
 
