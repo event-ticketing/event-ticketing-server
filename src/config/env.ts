@@ -33,6 +33,11 @@ const env = {
       expiry: process.env.JWT_REFRESH_EXPIRY || '15d',
     },
   },
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloud-name',
+    apiKey: process.env.CLOUDINARY_API_KEY || 'api-key',
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
 };
 
 export default env;

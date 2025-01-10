@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import env from '@/config/env';
 import ApiError from '@/utils/ApiError';
+import multer from 'multer';
 
 interface CustomError {
   statusCode: number;
@@ -13,6 +14,13 @@ interface CustomError {
 
 const errorConverter = (err: unknown, req: Request, res: Response, next: NextFunction) => {
   let error = err as CustomError;
+
+  if (error instanceof multer.MulterError) {
+    if (error.code === 'LIMIT_FILE_SIZE') {
+      error = new ApiError(httpStatus.BAD_REQUEST, 'File quá lớn');
+    }
+    error = new ApiError(httpStatus.BAD_REQUEST, error.message);
+  }
 
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;

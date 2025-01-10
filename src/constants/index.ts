@@ -6,6 +6,7 @@ import * as TicketTypeConstant from '@/constants/ticket-type.constant';
 import * as TicketConstant from '@/constants/ticket.constant';
 import * as VoucherConstant from '@/constants/voucher.constant';
 import * as OrderConstant from '@/constants/order.constant';
+import * as CommonConstant from '@/constants/common.constant';
 
 export {
   UserConstant,
@@ -16,4 +17,5 @@ export {
   TicketConstant,
   VoucherConstant,
   OrderConstant,
+  CommonConstant,
 };
