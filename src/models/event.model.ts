@@ -68,16 +68,19 @@ const eventSchema: Schema<IEvent> = new Schema(
     startTime: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     endTime: {
       type: Date,
       required: true,
+      default: Date.now,
     },
     url: {
       type: String,
       required: true,
       trim: true,
       unique: true,
+      default: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
     },
     organizerName: {
       type: String,
@@ -97,7 +100,6 @@ const eventSchema: Schema<IEvent> = new Schema(
     organizerAccountId: {
       type: Schema.Types.ObjectId,
       ref: 'Payment',
-      required: true,
     },
     createdBy: {
       type: Schema.Types.ObjectId,

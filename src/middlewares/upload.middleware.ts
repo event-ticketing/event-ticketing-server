@@ -35,4 +35,15 @@ const upload = (fieldName: string) => (req: Request, res: Response, next: NextFu
     next();
   });
 
+const uploadMultiple =
+  (fields: { name: string; maxCount: number }[]) => (req: Request, res: Response, next: NextFunction) =>
+    cloudUpload.fields(fields)(req, res, (err) => {
+      if (err) {
+        next(err);
+      }
+      next();
+    });
+
 export default upload;
+
+export { uploadMultiple };
