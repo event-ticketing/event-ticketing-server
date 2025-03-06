@@ -3,5 +3,6 @@ import * as authService from '@/services/auth.service';
 import * as otpService from '@/services/otp.service';
 import * as jwtService from '@/services/jwt.service';
 import * as eventService from '@/services/event.service';
+import * as showService from '@/services/show.service';
 
-export { userService, authService, otpService, jwtService, eventService };
+export { userService, authService, otpService, jwtService, eventService, showService };

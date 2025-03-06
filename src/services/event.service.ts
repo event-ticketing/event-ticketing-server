@@ -1,5 +1,5 @@
 import { UserConstant } from '@/constants';
-import { Event, IEvent, IUser } from '@/models';
+import { Event, IEvent, IUser, Show } from '@/models';
 import { ApiError } from '@/utils';
 
 const createEvent = async (eventData: Partial<IEvent>): Promise<IEvent> => {
@@ -23,8 +23,7 @@ const getEvents = async (
 };
 
 const getEventById = async (id: string): Promise<IEvent> => {
-  const event = await Event.findById(id);
-
+  const event = await Event.findById(id).populate('shows');
   if (!event) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');
   }

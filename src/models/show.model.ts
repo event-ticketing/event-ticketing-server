@@ -13,7 +13,6 @@ const showSchema: Schema<IShow> = new Schema(
   {
     name: {
       type: String,
-      required: true,
       trim: true,
     },
     eventId: {
@@ -34,6 +33,18 @@ const showSchema: Schema<IShow> = new Schema(
     timestamps: true,
   },
 );
+
+showSchema.pre('save', async function (next) {
+  const show = this as IShow;
+
+  if (show.isModified('startTime') || show.isModified('endTime')) {
+    const gmtStartTime = new Date(show.startTime).getTime();
+    const gmtEndTime = new Date(show.endTime).getTime();
+    show.name = `${new Date(gmtStartTime).toLocaleString()} - ${new Date(gmtEndTime).toLocaleString()}`;
+  }
+
+  next();
+});
 
 const Show: Model<IShow> = mongoose.model('Show', showSchema);
 

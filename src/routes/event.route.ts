@@ -1,5 +1,6 @@
 import express from 'express';
 
+import showRouter from '@/routes/show.route';
 import { eventValidation } from '@/validations';
 import { eventController } from '@/controllers';
 import { auth, uploadMultiple, validate } from '@/middlewares';
@@ -9,6 +10,8 @@ const eventRouter = express.Router();
 eventRouter.get('/', validate(eventValidation.getEvents), eventController.getEvents);
 
 eventRouter.get('/:id', validate(eventValidation.getEventById), eventController.getEventById);
+
+eventRouter.use('/:eventId/shows', showRouter);
 
 eventRouter.use(auth);
 

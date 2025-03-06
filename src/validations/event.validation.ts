@@ -1,6 +1,7 @@
-import { EventConstant } from '@/constants';
 import joi from 'joi';
-import { objectId } from './custom.validation';
+
+import { EventConstant } from '@/constants';
+import { objectId } from '@/validations/custom.validation';
 
 const createEvent = {
   body: joi.object({

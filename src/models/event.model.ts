@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 import { EventConstant } from '@/constants';
+import { IShow } from '@/models/show.model';
 
 export interface IEvent extends Document {
   name: string;
@@ -21,6 +22,7 @@ export interface IEvent extends Document {
   createdBy: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
+  shows?: any[];
 }
 
 const eventSchema: Schema<IEvent> = new Schema(
@@ -109,8 +111,22 @@ const eventSchema: Schema<IEvent> = new Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret, options) => {
+        delete ret.id;
+        return ret;
+      },
+    },
+    toObject: { virtuals: true },
   },
 );
+
+eventSchema.virtual('shows', {
+  ref: 'Show',
+  localField: '_id',
+  foreignField: 'eventId',
+});
 
 const EventModel: Model<IEvent> = mongoose.model('Event', eventSchema);
 
