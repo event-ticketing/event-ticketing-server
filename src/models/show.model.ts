@@ -31,6 +31,14 @@ const showSchema: Schema<IShow> = new Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret, options) => {
+        delete ret.id;
+        return ret;
+      },
+    },
+    toObject: { virtuals: true },
   },
 );
 
@@ -44,6 +52,12 @@ showSchema.pre('save', async function (next) {
   }
 
   next();
+});
+
+showSchema.virtual('ticketTypes', {
+  ref: 'TicketType',
+  localField: '_id',
+  foreignField: 'showId',
 });
 
 const Show: Model<IShow> = mongoose.model('Show', showSchema);

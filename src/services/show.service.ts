@@ -26,7 +26,7 @@ const getShowsOfEvent = async (eventId: string): Promise<IShow[]> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');
   }
 
-  const shows = await Show.find({ eventId });
+  const shows = await Show.find({ eventId }).populate('ticketTypes').lean();
   if (!shows) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Không có buổi biểu diễn nào.');
   }
@@ -39,7 +39,7 @@ const getShow = async (eventId: string, showId: string): Promise<IShow> => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');
   }
 
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ eventId, _id: showId }).populate('ticketTypes').lean();
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
@@ -48,14 +48,26 @@ const getShow = async (eventId: string, showId: string): Promise<IShow> => {
 };
 
 const updateShow = async (eventId: string, showId: string, showData: IShow): Promise<IShow> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const event = await Event.findById(eventId);
+  if (!event) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');
+  }
+
+  const show = await Show.findOne({ eventId, _id: showId }).populate('ticketTypes').lean();
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  Object.assign(show, showData);
+  if (showData.startTime) {
+    show.startTime = showData.startTime;
+  }
+
+  if (showData.endTime) {
+    show.endTime = showData.endTime;
+  }
 
   await show.save();
+
   return show;
 };
 

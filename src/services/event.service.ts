@@ -15,7 +15,16 @@ const getEvents = async (
   const skip = (page - 1) * limit;
 
   const [events, totalEvents] = await Promise.all([
-    Event.find(filters).limit(limit).skip(skip),
+    Event.find(filters)
+      .limit(limit)
+      .skip(skip)
+      .populate({
+        path: 'shows',
+        populate: {
+          path: 'ticketTypes',
+        },
+      })
+      .lean(),
     Event.countDocuments(filters),
   ]);
 
@@ -23,7 +32,14 @@ const getEvents = async (
 };
 
 const getEventById = async (id: string): Promise<IEvent> => {
-  const event = await Event.findById(id).populate('shows');
+  const event = await Event.findById(id)
+    .populate({
+      path: 'shows',
+      populate: {
+        path: 'ticketTypes',
+      },
+    })
+    .lean();
   if (!event) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');
   }
@@ -35,7 +51,14 @@ const updateEvent = async (id: string, user: IUser, updateBody: Partial<IEvent>)
   const event = await Event.findOne({
     _id: id,
     $or: [{ createdBy: user._id }, { role: UserConstant.USER_ROLE.ADMIN }],
-  });
+  })
+    .populate({
+      path: 'shows',
+      populate: {
+        path: 'ticketTypes',
+      },
+    })
+    .lean();
 
   if (!event) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Sự kiện không tồn tại.');

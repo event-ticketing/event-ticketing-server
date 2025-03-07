@@ -7,7 +7,7 @@ export interface ITicketType extends Document {
   description: string;
   quantity: number;
   price: number;
-  orginalPrice: number;
+  originalPrice: number;
   isFree: boolean;
   minQtyPerOrder: number;
   maxQtyPerOrder: number;
@@ -39,7 +39,7 @@ const ticketTypeSchema: Schema<ITicketType> = new Schema(
       type: Number,
       required: true,
     },
-    orginalPrice: {
+    originalPrice: {
       type: Number,
       required: true,
     },
