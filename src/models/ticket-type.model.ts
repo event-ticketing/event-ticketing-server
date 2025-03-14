@@ -14,7 +14,7 @@ export interface ITicketType extends Document {
   status: string;
   startTime: Date;
   endTime: Date;
-  showId: Schema.Types.ObjectId;
+  show: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,7 +71,7 @@ const ticketTypeSchema: Schema<ITicketType> = new Schema(
       type: Date,
       required: true,
     },
-    showId: {
+    show: {
       type: Schema.Types.ObjectId,
       ref: 'Show',
       required: true,

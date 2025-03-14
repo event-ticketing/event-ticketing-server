@@ -18,7 +18,7 @@ export interface IEvent extends Document {
   organizerName: string;
   organizerLogoURL: string;
   organizerDescription: string;
-  organizerAccountId: Schema.Types.ObjectId;
+  organizerAccount: Schema.Types.ObjectId;
   createdBy: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -99,7 +99,7 @@ const eventSchema: Schema<IEvent> = new Schema(
       required: true,
       trim: true,
     },
-    organizerAccountId: {
+    organizerAccount: {
       type: Schema.Types.ObjectId,
       ref: 'Payment',
     },
@@ -125,7 +125,7 @@ const eventSchema: Schema<IEvent> = new Schema(
 eventSchema.virtual('shows', {
   ref: 'Show',
   localField: '_id',
-  foreignField: 'eventId',
+  foreignField: 'event',
 });
 
 const EventModel: Model<IEvent> = mongoose.model('Event', eventSchema);

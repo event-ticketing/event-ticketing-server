@@ -1,19 +1,19 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IOrder extends Document {
-  userId: Schema.Types.ObjectId;
+  user: Schema.Types.ObjectId;
   totalAmount: number;
   discountAmount: number;
   finalAmount: number;
   status: string;
-  voucherId?: Schema.Types.ObjectId;
+  voucher?: Schema.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const orderSchema: Schema<IOrder> = new Schema(
   {
-    userId: {
+    user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -34,7 +34,7 @@ const orderSchema: Schema<IOrder> = new Schema(
       type: String,
       required: true,
     },
-    voucherId: {
+    voucher: {
       type: Schema.Types.ObjectId,
       ref: 'Voucher',
     },
@@ -51,20 +51,6 @@ const orderSchema: Schema<IOrder> = new Schema(
     toObject: { virtuals: true },
   },
 );
-
-orderSchema.virtual('user', {
-  ref: 'User',
-  localField: 'userId',
-  foreignField: '_id',
-  justOne: true,
-});
-
-orderSchema.virtual('voucher', {
-  ref: 'Voucher',
-  localField: 'voucherId',
-  foreignField: '_id',
-  justOne: true,
-});
 
 const Order: Model<IOrder> = mongoose.model('Order', orderSchema);
 

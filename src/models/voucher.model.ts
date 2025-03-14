@@ -81,13 +81,6 @@ const voucherSchema: Schema<IVoucher> = new Schema(
   },
 );
 
-voucherSchema.virtual('voucher', {
-  ref: 'Voucher',
-  localField: '_id',
-  foreignField: 'voucherId',
-  justOne: true,
-});
-
 const Voucher: Model<IVoucher> = mongoose.model('Voucher', voucherSchema);
 
 export default Voucher;

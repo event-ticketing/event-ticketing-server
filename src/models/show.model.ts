@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IShow extends Document {
   name: string;
-  eventId: Schema.Types.ObjectId;
+  event: Schema.Types.ObjectId;
   startTime: Date;
   endTime: Date;
   createdAt: Date;
@@ -15,7 +15,7 @@ const showSchema: Schema<IShow> = new Schema(
       type: String,
       trim: true,
     },
-    eventId: {
+    event: {
       type: Schema.Types.ObjectId,
       ref: 'Event',
       required: true,

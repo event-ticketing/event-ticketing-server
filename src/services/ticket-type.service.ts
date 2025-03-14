@@ -5,29 +5,29 @@ import { ApiError } from '@/utils';
 import { ITicketType, Show, TicketType } from '@/models';
 
 const createTicketType = async (eventId: string, showId: string, ticketTypeData: ITicketType): Promise<ITicketType> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ event: eventId, _id: showId });
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  const isExist = await TicketType.findOne({ showId, name: ticketTypeData.name });
+  const isExist = await TicketType.findOne({ show: showId, name: ticketTypeData.name });
   if (isExist) {
     throw new ApiError(httpStatus.CONFLICT, 'Loại vé đã tồn tại.');
   }
 
-  ticketTypeData.showId = showId as unknown as ObjectId;
+  ticketTypeData.show = showId as unknown as ObjectId;
   const ticketType = TicketType.create(ticketTypeData);
 
   return ticketType;
 };
 
 const getTicketTypesOfShow = async (eventId: string, showId: string): Promise<ITicketType[]> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ event: eventId, _id: showId });
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  const ticketTypes = await TicketType.find({ showId });
+  const ticketTypes = await TicketType.find({ show: showId });
   if (!ticketTypes) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Không có loại vé nào.');
   }
@@ -36,12 +36,12 @@ const getTicketTypesOfShow = async (eventId: string, showId: string): Promise<IT
 };
 
 const getTicketType = async (eventId: string, showId: string, ticketTypeId: string): Promise<ITicketType> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ event: eventId, _id: showId });
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  const ticketType = await TicketType.findOne({ showId, _id: ticketTypeId });
+  const ticketType = await TicketType.findOne({ show: showId, _id: ticketTypeId });
   if (!ticketType) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Loại vé không tồn tại.');
   }
@@ -55,12 +55,12 @@ const updateTicketType = async (
   ticketTypeId: string,
   ticketTypeData: ITicketType,
 ): Promise<ITicketType> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ event: eventId, _id: showId });
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  const ticketType = await TicketType.findOne({ showId, _id: ticketTypeId });
+  const ticketType = await TicketType.findOne({ show: showId, _id: ticketTypeId });
   if (!ticketType) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Loại vé không tồn tại.');
   }
@@ -84,12 +84,12 @@ const updateTicketType = async (
 };
 
 const deleteTicketType = async (eventId: string, showId: string, ticketTypeId: string): Promise<void> => {
-  const show = await Show.findOne({ eventId, _id: showId });
+  const show = await Show.findOne({ event: eventId, _id: showId });
   if (!show) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Buổi biểu diễn không tồn tại.');
   }
 
-  const ticketType = await TicketType.findOne({ showId, _id: ticketTypeId });
+  const ticketType = await TicketType.findOne({ show: showId, _id: ticketTypeId });
   if (!ticketType) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Loại vé không tồn tại.');
   }

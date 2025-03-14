@@ -3,8 +3,8 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { TicketConstant } from '@/constants';
 
 export interface ITicket extends Document {
-  orderId: Schema.Types.ObjectId;
-  ticketTypeId: Schema.Types.ObjectId;
+  order: Schema.Types.ObjectId;
+  ticketType: Schema.Types.ObjectId;
   purchasedDate: Date;
   status: string;
   createdAt: Date;
@@ -13,12 +13,12 @@ export interface ITicket extends Document {
 
 const ticketSchema: Schema<ITicket> = new Schema(
   {
-    orderId: {
+    order: {
       type: Schema.Types.ObjectId,
       ref: 'Order',
       required: true,
     },
-    ticketTypeId: {
+    ticketType: {
       type: Schema.Types.ObjectId,
       ref: 'TicketType',
       required: true,

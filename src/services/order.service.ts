@@ -50,20 +50,20 @@ const createOrder = async (user: IUser, orderData: any): Promise<IOrder> => {
   }
 
   const order = await Order.create({
-    userId: user._id,
+    user: user._id,
     totalAmount,
     discountAmount,
     finalAmount,
     status: finalAmount === 0 ? OrderConstant.ORDER_STATUS.COMPLETED : OrderConstant.ORDER_STATUS.PENDING,
-    voucherId: voucher ? voucher._id : null,
+    voucher: voucher ? (voucher as IVoucher)._id : null,
   });
 
   ticketType.quantity -= quantity;
   await ticketType.save();
 
   const tickets = Array.from({ length: quantity }, () => ({
-    orderId: order._id,
-    ticketTypeId: ticketType._id,
+    order: order._id,
+    ticketType: ticketType._id,
     purchasedDate: order.createdAt,
     status: TicketConstant.TICKET_STATUS.PENDING,
   }));
@@ -80,7 +80,7 @@ const getOrders = async (
 ): Promise<{ orders: IOrder[]; totalOrders: number }> => {
   const skip = (page - 1) * limit;
 
-  const filters: Record<string, any> = { userId: user._id };
+  const filters: Record<string, any> = { user: user._id };
 
   if (status && Object.values(OrderConstant.ORDER_STATUS).includes(status)) {
     filters.status = status;
@@ -95,7 +95,7 @@ const getOrders = async (
 };
 
 const getOrder = async (user: IUser, orderId: string): Promise<IOrder> => {
-  const order = await Order.findOne({ _id: orderId, userId: user._id }).populate('user voucher').lean();
+  const order = await Order.findOne({ _id: orderId, user: user._id }).populate('user voucher').lean();
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Đơn hàng không tồn tại.');
   }
@@ -104,22 +104,19 @@ const getOrder = async (user: IUser, orderId: string): Promise<IOrder> => {
 };
 
 const cancelOrder = async (user: IUser, orderId: string): Promise<void> => {
-  const order = await Order.findOne({ _id: orderId, userId: user._id });
+  const order = await Order.findOne({ _id: orderId, user: user._id });
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Đơn hàng không tồn tại.');
   }
 
-  const tickets = await Ticket.find({ orderId: order._id });
-  const totalTickets = tickets.length;
-  for (const ticket of tickets) {
-    ticket.status = TicketConstant.TICKET_STATUS.CANCELLED;
-    await ticket.save();
-  }
+  const tickets = await Ticket.find({ order: order._id });
+  if (!tickets.length) return;
 
-  const ticketType = await TicketType.findById(tickets[0].ticketTypeId);
-  if (!ticketType) return;
-  ticketType.quantity += totalTickets;
-  await ticketType.save();
+  const ticketTypeIds = [...new Set(tickets.map((ticket) => ticket.ticketType))];
+
+  await Ticket.updateMany({ order: order._id }, { status: TicketConstant.TICKET_STATUS.CANCELLED });
+
+  await TicketType.updateMany({ _id: { $in: ticketTypeIds } }, { $inc: { quantity: tickets.length } });
 
   order.status = OrderConstant.ORDER_STATUS.CANCELLED;
   await order.save();
