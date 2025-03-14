@@ -70,8 +70,23 @@ const voucherSchema: Schema<IVoucher> = new Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret, options) => {
+        delete ret.id;
+        return ret;
+      },
+    },
+    toObject: { virtuals: true },
   },
 );
+
+voucherSchema.virtual('voucher', {
+  ref: 'Voucher',
+  localField: '_id',
+  foreignField: 'voucherId',
+  justOne: true,
+});
 
 const Voucher: Model<IVoucher> = mongoose.model('Voucher', voucherSchema);
 
