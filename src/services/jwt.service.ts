@@ -1,3 +1,4 @@
+import ms from 'ms';
 import jwt from 'jsonwebtoken';
 import { Request } from 'express';
 
@@ -6,7 +7,7 @@ import { JWTConstant } from '@/constants';
 const generateToken = (payload: any, type: JWTConstant.TokenType): string => {
   const { secret, expiresIn } = JWTConstant.TOKEN_MAPPING[type];
 
-  const token = jwt.sign({ ...payload, type }, secret, { expiresIn });
+  const token = jwt.sign({ ...payload, type }, secret, { expiresIn: expiresIn as ms.StringValue });
 
   return token;
 };

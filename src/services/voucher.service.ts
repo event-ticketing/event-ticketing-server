@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+
 import { ApiError } from '@/utils';
 import { IVoucher, Voucher } from '@/models';
 import { VoucherConstant } from '@/constants';

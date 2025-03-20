@@ -1,3 +1,5 @@
+import httpStatus from 'http-status';
+
 import { UserConstant } from '@/constants';
 import { Event, IEvent, IUser, Show } from '@/models';
 import { ApiError } from '@/utils';
