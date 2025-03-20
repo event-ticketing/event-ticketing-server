@@ -17,6 +17,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.set('trust proxy', true);
+
 if (env.server.nodeEnv === 'development') {
   app.use(morganMiddleware);
   mongoose.set('debug', true);

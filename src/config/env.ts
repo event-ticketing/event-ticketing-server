@@ -38,6 +38,10 @@ const env = {
     apiKey: process.env.CLOUDINARY_API_KEY || 'api-key',
     apiSecret: process.env.CLOUDINARY_API_SECRET,
   },
+  vnpay: {
+    tmnCode: process.env.VNPAY_TMN_CODE || 'tmn-code',
+    secureSecret: process.env.VNPAY_SECURE_SECRET || 'secure-secret',
+  },
 };
 
 export default env;

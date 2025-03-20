@@ -7,6 +7,7 @@ import * as showService from '@/services/show.service';
 import * as ticketTypeService from '@/services/ticket-type.service';
 import * as orderService from '@/services/order.service';
 import * as voucherService from '@/services/voucher.service';
+import * as paymentService from '@/services/payment.service';
 
 export {
   userService,
@@ -18,4 +19,5 @@ export {
   ticketTypeService,
   orderService,
   voucherService,
+  paymentService,
 };
