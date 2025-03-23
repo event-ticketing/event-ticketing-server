@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { IEvent } from './event.model';
 
 export interface IShow extends Document {
   name: string;
@@ -7,6 +8,7 @@ export interface IShow extends Document {
   endTime: Date;
   createdAt: Date;
   updatedAt: Date;
+  ticketTypes: any[];
 }
 
 const showSchema: Schema<IShow> = new Schema(
@@ -57,7 +59,7 @@ showSchema.pre('save', async function (next) {
 showSchema.virtual('ticketTypes', {
   ref: 'TicketType',
   localField: '_id',
-  foreignField: 'showId',
+  foreignField: 'show',
 });
 
 const Show: Model<IShow> = mongoose.model('Show', showSchema);

@@ -11,6 +11,8 @@ import response from '@/utils/response';
 import morganMiddleware from '@/config/morgan';
 import emailWorker from '@/queues/workers/mail.worker';
 import { errorConverter, errorHandler } from '@/middlewares';
+import { scheduleReminderEmails } from '@/queues/notification.queue';
+import notificationWorker from '@/queues/workers/notification.worker';
 
 const app = express();
 
@@ -47,6 +49,8 @@ app.all('*', (_req: Request, res: Response) => {
 app.use(errorConverter);
 app.use(errorHandler);
 
+scheduleReminderEmails();
+
 connectDB()
   .then(() => {
     emailWorker
@@ -55,6 +59,13 @@ connectDB()
       })
       .on('error', (error: any) => {
         logger.error(`Email worker error: ${error.message}`);
+      });
+    notificationWorker
+      .on('ready', () => {
+        logger.info('Notification worker is ready');
+      })
+      .on('error', (error: any) => {
+        logger.error(`Notification worker error: ${error.message}`);
       });
   })
   .then(() => {

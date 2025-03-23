@@ -2,9 +2,9 @@ import httpStatus from 'http-status';
 
 import { emailQueue } from '@/queues';
 import { IUser, User } from '@/models';
-import { userService, otpService, jwtService } from '@/services';
-import { ApiError, crypto, generateOtp } from '@/utils';
 import { TOKEN_TYPE } from '@/constants/jwt.constant';
+import { ApiError, crypto, generateOtp } from '@/utils';
+import { userService, otpService, jwtService } from '@/services';
 
 const signUp = async (userData: Partial<IUser>): Promise<void> => {
   const { email } = userData;

@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 
 import { ApiError } from '@/utils';
 import { voucherService } from '@/services';
+import { notificationQueue } from '@/queues';
 import { IOrder, IUser, IVoucher, Order, Ticket, TicketType } from '@/models';
 import { OrderConstant, TicketConstant, TicketTypeConstant } from '@/constants';
 
@@ -21,11 +22,7 @@ const createOrder = async (user: IUser, orderData: any): Promise<IOrder> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Số lượng vé không đủ.');
   }
 
-  if (
-    ticketType.startTime > new Date() ||
-    ticketType.endTime < new Date() ||
-    ticketType.status === TicketTypeConstant.TICKET_TYPE_STATUS.SOLD
-  ) {
+  if (ticketType.startTime < new Date() || ticketType.status === TicketTypeConstant.TICKET_TYPE_STATUS.SOLD) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Vé không còn hiệu lực.');
   }
 
@@ -68,6 +65,8 @@ const createOrder = async (user: IUser, orderData: any): Promise<IOrder> => {
     status: TicketConstant.TICKET_STATUS.PENDING,
   }));
   await Ticket.insertMany(tickets);
+
+  await notificationQueue.sendOrderConfirmationEmail(user.email, String(order._id));
 
   return order;
 };

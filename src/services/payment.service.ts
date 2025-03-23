@@ -4,8 +4,8 @@ import { IpnResponse, IpnSuccess, ProductCode, VerifyIpnCall, VerifyReturnUrl, V
 
 import { ApiError } from '@/utils';
 import vnpay from '@/config/vnpay';
-import { OrderConstant } from '@/constants';
 import { IUser, Order, Ticket } from '@/models';
+import { OrderConstant, TicketConstant } from '@/constants';
 
 const createVNPayPayment = async (user: IUser, orderId: string, req: Request): Promise<string> => {
   const order = await Order.findOne({ _id: orderId, user: user._id });
@@ -64,7 +64,7 @@ const handleVNPayIPN = async (ipnQuery: VerifyIpnCall): Promise<IpnResponse> => 
 
   const tickets = await Ticket.find({ order: order._id });
   for (const ticket of tickets) {
-    ticket.status = OrderConstant.ORDER_STATUS.COMPLETED;
+    ticket.status = TicketConstant.TICKET_STATUS.SUCCESS;
     await ticket.save();
   }
 
@@ -72,6 +72,7 @@ const handleVNPayIPN = async (ipnQuery: VerifyIpnCall): Promise<IpnResponse> => 
 };
 
 const handleVNPayReturn = async (returnQuery: VerifyReturnUrl): Promise<IpnResponse> => {
+  await handleVNPayIPN(returnQuery);
   const verify: VerifyReturnUrl = vnpay.verifyReturnUrl(returnQuery);
   if (!verify.isVerified) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Thanh toán không hợp lệ.');
