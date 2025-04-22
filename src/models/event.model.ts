@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 import { EventConstant } from '@/constants';
-import { IShow } from '@/models/show.model';
 
 export interface IEvent extends Document {
+  _id: Schema.Types.ObjectId;
   name: string;
   logoURL: string;
   coverURL: string;

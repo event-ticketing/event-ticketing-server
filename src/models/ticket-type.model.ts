@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { TicketTypeConstant } from '@/constants';
 
 export interface ITicketType extends Document {
+  _id: Schema.Types.ObjectId;
   name: string;
   description: string;
   quantity: number;

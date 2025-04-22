@@ -23,7 +23,7 @@ const createVNPayPayment = async (user: IUser, orderId: string, req: Request): P
       req.connection.remoteAddress ||
       req.socket.remoteAddress ||
       req.ip) as string,
-    vnp_TxnRef: order._id as string,
+    vnp_TxnRef: order._id.toString(),
     vnp_OrderInfo: `Thanh toan don hang ${order._id}`,
     vnp_OrderType: ProductCode.Other,
     vnp_ReturnUrl: 'http://localhost:3000/api/v1/payment/vnpay-return',
@@ -47,7 +47,7 @@ const handleVNPayIPN = async (ipnQuery: VerifyIpnCall): Promise<IpnResponse> => 
 
   const order = await Order.findById(verify.vnp_TxnRef);
 
-  if (!order || verify.vnp_TxnRef != order._id) {
+  if (!order || verify.vnp_TxnRef != order._id.toString()) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Đơn hàng không tồn tại.');
   }
 

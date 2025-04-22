@@ -4,6 +4,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { UserConstant } from '@/constants';
 
 export interface IUser extends Document {
+  _id: Schema.Types.ObjectId;
   email: string;
   phoneNumber?: string;
   password: string;

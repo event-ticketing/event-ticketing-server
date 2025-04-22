@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IPayment extends Document {
+  _id: Schema.Types.ObjectId;
   owner: string;
   accountNumber: string;
   bank: string;

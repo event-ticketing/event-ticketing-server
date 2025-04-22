@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { TicketConstant } from '@/constants';
 
 export interface ITicket extends Document {
+  _id: Schema.Types.ObjectId;
   order: Schema.Types.ObjectId;
   ticketType: Schema.Types.ObjectId;
   purchasedDate: Date;

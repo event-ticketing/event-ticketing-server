@@ -6,6 +6,7 @@ import * as ticketTypeController from '@/controllers/ticket-type.controller';
 import * as orderController from '@/controllers/order.controller';
 import * as paymentController from '@/controllers/payment.controller';
 import * as voucherController from '@/controllers/voucher.controller';
+import * as ticketController from '@/controllers/ticket.controller';
 
 export {
   userController,
@@ -16,4 +17,5 @@ export {
   orderController,
   paymentController,
   voucherController,
+  ticketController,
 };

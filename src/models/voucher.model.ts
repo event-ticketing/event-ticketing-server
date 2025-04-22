@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { VoucherConstant } from '@/constants';
 
 export interface IVoucher extends Document {
+  _id: Schema.Types.ObjectId;
   name: string;
   code: string;
   voucherType: string;
